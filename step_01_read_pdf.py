@@ -1,30 +1,16 @@
-import unicodedata
-from pypdf import PdfReader 
+from pdf_service import extract_all_pages
 
-reader = PdfReader("seo-codal-report.pdf")
+PDF_PATH = "seo-codal-report.pdf"
+OUTPUT_PATH = "all_pages.txt"
 
-page_count: int = len(reader.pages)
+pages: list[str] = extract_all_pages(PDF_PATH)
 
-print(page_count)
+print(f"Pages: {len(pages)}")
+print(pages[0])
 
-first_page = reader.pages[0]
-
-page_text: str = first_page.extract_text() or ""
-
-page_text = unicodedata.normalize("NFKC", page_text)
-
-print(page_text)
-
-with open("all_pages_layout.txt", mode="w", encoding="utf-8") as file:
-    for page_number, page in enumerate(reader.pages, start=1):
-        text: str = page.extract_text() or ""
-
-        text = unicodedata.normalize("NFKC", text)
-
+with open(OUTPUT_PATH, mode="w", encoding="utf-8") as file:
+    for page_number, text in enumerate(pages, start=1):
         file.write(f"===== page {page_number} =====\n\n")
         file.write(text)
         file.write("\n\n")
-
         print(f"Page {page_number} saved")
-
-
