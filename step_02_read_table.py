@@ -3,8 +3,8 @@ import json
 from pdf_service import extract_tables
 
 PDF_PATH = "seo-codal-report.pdf"
-PAGE_INDEX = 20  # page 21
-OUTPUT_PATH = "table_page_21.json"
+PAGE_INDEX = 11  # page 12
+OUTPUT_PATH = "table_page_12.json"
 
 tables = extract_tables(PDF_PATH, PAGE_INDEX)
 

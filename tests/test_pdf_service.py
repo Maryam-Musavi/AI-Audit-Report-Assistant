@@ -67,3 +67,32 @@ def test_all_pages_have_no_bad_chars():
         if BAD_CHARS.search(text)
     ]
     assert not bad_pages, f"صفحه‌های مشکل‌دار: {bad_pages}"
+
+def test_page_12_table_numbers_and_dates():
+    tables = extract_tables(ROOT / "seo-codal-report.pdf", 11)
+    assert len(tables) == 4
+    cells = [c for t in tables for r in t for c in r if c]
+    assert "6,040,783,554" in cells
+    assert "(5,464,038,038)" in cells
+    assert any("1404/12/29" in c for c in cells)
+
+
+def test_all_tables_have_no_bad_chars():
+    import pdfplumber
+
+    pdf = ROOT / "seo-codal-report.pdf"
+    with pdfplumber.open(pdf) as document:
+        page_count = len(document.pages)
+
+    checked = 0
+    for page_index in range(page_count):
+        for table in extract_tables(pdf, page_index):
+            for row in table:
+                for cell in row:
+                    if cell:
+                        checked += 1
+                        assert not BAD_CHARS.search(cell), (
+                            f"page {page_index + 1}: {cell!r}"
+                        )
+    assert checked > 0
+

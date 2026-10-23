@@ -49,9 +49,27 @@ def normalize_fa(text: str) -> str:
     return text.strip()
 
 
+_NUM_TOKEN = re.compile(r"^[\d,./()\-%]+$")
+
+
 def fix_visual_cell(text: str) -> str:
-    """Fix a table cell that was extracted in visual (reversed) order."""
-    return normalize_fa(get_display(text, base_dir="R"))
+    """Fix a cell extracted in visual (reversed) order.
+
+    Words are reversed with bidi; numeric tokens (numbers, dates,
+    parentheses) are already in logical order and are kept intact.
+    Token order within each line is reversed back to logical order.
+    """
+    lines = []
+    for line in text.split("\n"):
+        tokens = []
+        for token in line.split():
+            normalized = normalize_fa(token)
+            if _NUM_TOKEN.match(normalized):
+                tokens.append(normalized)
+            else:
+                tokens.append(normalize_fa(get_display(token, base_dir="R")))
+        lines.append(" ".join(reversed(tokens)))
+    return "\n".join(lines)
 
 
 def extract_page_text(pdf_path: str | Path, page_index: int) -> str:
