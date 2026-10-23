@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT))
 import pytest
 
 from pdf_service import (
+    extract_all_pages,
     extract_page_text,
     extract_tables,
     fix_visual_cell,
@@ -56,3 +57,13 @@ def test_excel_income_statement_numbers():
     text = "\n".join(t.to_string() for t in tables[:5])
     assert "4,425,065,684" in text
     assert not BAD_CHARS.search(text)
+
+
+def test_all_pages_have_no_bad_chars():
+    pages = extract_all_pages(PDF)
+    bad_pages = [
+        (number, sorted(set(BAD_CHARS.findall(text))))
+        for number, text in enumerate(pages, start=1)
+        if BAD_CHARS.search(text)
+    ]
+    assert not bad_pages, f"صفحه‌های مشکل‌دار: {bad_pages}"
