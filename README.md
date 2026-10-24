@@ -107,6 +107,60 @@ ai-audit-report-assistant/
 
 This is a suggested structure, not a requirement for the first commit. Start with the smallest working version and add modules as the project grows.
 
+## Local Setup (Windows PowerShell)
+
+### 1. ساخت محیط مجازی
+
+```powershell
+cd D:\Programming\LLMOps\LLMOPS\AI-Audit-Report-Assistant
+py -3.14 -m venv .venv.3.14
+```
+
+اگر `py -3.14` کار نکرد، نسخه‌های نصب‌شده را با `py --list` ببینید.
+
+### 2. فعال‌سازی محیط مجازی
+
+```powershell
+.\.venv.3.14\Scripts\Activate.ps1
+python --version
+```
+
+پس از فعال‌سازی، ابتدای خط فرمان باید `(.venv.3.14)` نمایش داده شود و `python --version` باید `Python 3.14.x` را نشان دهد.
+
+اگر PowerShell اجازه اجرای اسکریپت نداد، یک‌بار این دستور را اجرا کنید:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+### 3. نصب وابستگی‌ها
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+اگر فایل نیازمندی‌ها را داخل پوشه‌ی `backend` قرار دادید، به‌جای دستور بالا از این دستور استفاده کنید:
+
+```powershell
+python -m pip install -r backend\requirements.txt
+```
+
+### 4. غیرفعال‌سازی محیط مجازی
+
+```powershell
+deactivate
+```
+
+### 5. اجرای تست‌ها
+
+```powershell
+$env:PYTHONUTF8="1"
+python -m pytest -v
+```
+
+---
+
+
 ## Development Roadmap
 
 ### Phase 1 — Frontend ↔ Backend
