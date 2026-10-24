@@ -3,6 +3,8 @@ import json
 import re
 import sys
 
+from backend.paths import GENERATED
+
 MIN_ABS = 100  # جمع‌های خیلی کوچک/صفر خطا حساب نمی‌شوند
 PERSIAN = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
 
@@ -54,7 +56,7 @@ def find_match(rows, i, j):
 
 
 def main():
-    blocks = json.load(open("blocks.json", encoding="utf-8"))
+    blocks = json.load(open(GENERATED / "blocks.json", encoding="utf-8"))
     ok = bad = skipped = 0
     problems = []
     for b in blocks:

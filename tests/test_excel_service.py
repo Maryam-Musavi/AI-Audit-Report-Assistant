@@ -1,8 +1,9 @@
 from pathlib import Path
 import pytest
+from backend.paths import EXCEL_PATH
 from backend.services.excel_service import load_balance_sheet, get_total_debt, get_credit_sales
 
-XLSX = Path(__file__).resolve().parent.parent / "Table.xlsx"
+XLSX = EXCEL_PATH
 
 
 @pytest.fixture(scope="module")

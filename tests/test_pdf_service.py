@@ -3,10 +3,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
 import pytest
 
+from backend.paths import PDF_PATH, SAMPLES
 from backend.services.pdf_service import (
     extract_all_pages,
     extract_page_text,
@@ -16,8 +16,8 @@ from backend.services.pdf_service import (
     read_codal_excel_tables,
 )
 
-PDF = ROOT / "seo-codal-report.pdf"
-XLS = next(ROOT.glob("76b011b7-*.xls"))
+PDF = PDF_PATH
+XLS = next(SAMPLES.glob("76b011b7-*.xls"), None)  # اختیاری: فایل اصلی Codal
 
 BAD_CHARS = re.compile("[يكىھ٠-٩۰-۹]")  # Arabic letter variants + non-ASCII digits
 
@@ -52,6 +52,7 @@ def test_page_21_table_is_logical_order():
     assert not any(BAD_CHARS.search(c) for c in flat)
 
 
+@pytest.mark.skipif(XLS is None, reason="فایل .xls اصلی Codal در data/samples نیست")
 def test_excel_income_statement_numbers():
     tables = read_codal_excel_tables(XLS)
     text = "\n".join(t.to_string() for t in tables[:5])
@@ -69,7 +70,7 @@ def test_all_pages_have_no_bad_chars():
     assert not bad_pages, f"صفحه‌های مشکل‌دار: {bad_pages}"
 
 def test_page_12_table_numbers_and_dates():
-    tables = extract_tables(ROOT / "seo-codal-report.pdf", 11)
+    tables = extract_tables(PDF, 11)
     assert len(tables) == 4
     cells = [c for t in tables for r in t for c in r if c]
     assert "6,040,783,554" in cells
@@ -80,7 +81,7 @@ def test_page_12_table_numbers_and_dates():
 def test_all_tables_have_no_bad_chars():
     import pdfplumber
 
-    pdf = ROOT / "seo-codal-report.pdf"
+    pdf = PDF
     with pdfplumber.open(pdf) as document:
         page_count = len(document.pages)
 
