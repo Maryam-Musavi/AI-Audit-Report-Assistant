@@ -7,7 +7,7 @@ sys.path.insert(0, str(ROOT))
 
 import pytest
 
-from pdf_service import (
+from backend.services.pdf_service import (
     extract_all_pages,
     extract_page_text,
     extract_tables,

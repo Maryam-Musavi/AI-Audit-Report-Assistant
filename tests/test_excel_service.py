@@ -1,6 +1,6 @@
 from pathlib import Path
 import pytest
-from excel_service import load_balance_sheet, get_total_debt, get_credit_sales
+from backend.services.excel_service import load_balance_sheet, get_total_debt, get_credit_sales
 
 XLSX = Path(__file__).resolve().parent.parent / "Table.xlsx"
 
