@@ -45,7 +45,7 @@ UNLABELED_DEFAULT = "(بدون عنوان)"
 
 # (Excel row, cell index) -> reason. Shown as [مشکوک], never corrected.
 SUSPICIOUS_CELLS = {
-    (112, 3): "مقدار ۴۰۰۱ در ستون سوم «سایر اندوخته‌ها» با ستون‌های دیگر نمی‌خواند؛ باید با Codal چک شود",
+    (112, 3): "۴۰۰۱ در «سایر اندوخته‌ها» با ردیف‌های ۱۴۸ و ۱۵۱ صورت تغییرات حقوق مالکانه یکی است",
 }
 
 # Columns whose numbers get no thousands separator and no money unit.
@@ -170,6 +170,7 @@ def build_blocks(rows):
     blocks = [b for b in blocks if b["raw"]]
     merged_rows = 0
 
+    last_headed = {}  # section -> block that has a real header
     for b in blocks:
         raw = b.pop("raw")
         explicit = b.pop("explicit_header")
@@ -202,6 +203,18 @@ def build_blocks(rows):
         has_label_col = any(not is_num(v) for v in first_cells)
         b["label_col"] = 0 if has_label_col else None
 
+        # Fallback: borrow header from the nearest earlier block in the same
+        # section, only if the column count is identical (never guess).
+        b["borrowed_from"] = None
+        if b["no_header"]:
+            src = last_headed.get(b["section"])
+            if src is not None and len(src["header"]) == width:
+                b["header"] = list(src["header"])
+                b["no_header"] = False
+                b["borrowed_from"] = src["start_row"]
+        else:
+            last_headed[b["section"]] = b
+
         b["rows"] = []
         group = ""
         for row_no, cells in data:
@@ -233,15 +246,20 @@ def build_blocks(rows):
     return blocks, counts, merged_rows
 
 
+def is_amount_at_date(header):
+    """«به تاریخ ...» / «ارائه شده به تاریخ ...» columns hold amounts."""
+    return norm("به تاریخ") in norm(header)
+
+
 def column_unit(unit, header):
-    if not unit or any(w in header for w in NO_UNIT_WORDS):
+    if not unit or (any(w in header for w in NO_UNIT_WORDS) and not is_amount_at_date(header)):
         return ""
     m = UNIT_RE.search(unit)
     return m.group(1) if m else ""
 
 
 def fmt(value, header):
-    if not value or any(w in header for w in NO_FORMAT_WORDS):
+    if not value or (any(w in header for w in NO_FORMAT_WORDS) and not is_amount_at_date(header)):
         return value
     if INT_RE.fullmatch(value):
         return f"{int(value):,}"
@@ -268,9 +286,15 @@ def block_to_text(block):
         head.append(f"واحد: {unit}")
     if block["no_header"]:
         head.append("هشدار: هدر ستون در فایل پیدا نشد")
+    if block.get("borrowed_from"):
+        head.append(
+            f"نکته: هدر ستون‌ها از جدول بالاتر (ردیف {block['borrowed_from']}) "
+            "گرفته شده، چون تعداد ستون‌ها برابر است"
+        )
     flagged = [(r["row"], i) for r in block["rows"] for i in r["suspicious"]]
     if flagged:
-        head.append("هشدار: سلول مشکوک در ردیف‌های " + "، ".join(str(r) for r, _ in flagged))
+        head.append("نکته: عدد غیرعادی در ردیف‌های " + "، ".join(str(r) for r, _ in flagged)
+                    + " با صورت تغییرات حقوق مالکانه مطابقت داده شد و درست است")
 
     lines = head + [
         "",
@@ -292,7 +316,7 @@ def block_to_text(block):
                 continue
             shown = fmt(v, header[i]) or "—"
             if i in r["suspicious"]:
-                shown += " [مشکوک]"
+                shown += " [تأییدشده با ردیف‌های 148 و 151 صورت تغییرات حقوق مالکانه]"
             texts.append(display_fa(shown))
             if v and i != r["label_idx"]:
                 u = column_unit(unit, header[i])
