@@ -1,19 +1,12 @@
 import re
 import pandas as pd
+from backend.utils.text import norm
 
-_FA_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+
 _DATE = re.compile(r"\d{4}/\d{2}/\d{2}")
 
 BALANCE_TITLE = "صورت وضعیت مالی"
 BALANCE_END = "جمع حقوق مالکانه و بدهی ها"
-
-
-def norm(s) -> str:
-    s = str(s).translate(_FA_DIGITS)
-    s = s.replace("ي", "ی").replace("ك", "ک").replace("ى", "ی")
-    s = s.replace("\u200c", " ").replace("\u200f", " ")
-    return re.sub(r"\s+", " ", s).strip()
-
 
 def _num(v):
     try:

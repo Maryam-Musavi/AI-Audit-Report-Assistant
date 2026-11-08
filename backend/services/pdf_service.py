@@ -26,19 +26,7 @@ from pathlib import Path
 import pdfplumber
 import pymupdf
 from bidi.algorithm import get_display
-
-_CHAR_MAP = str.maketrans(
-    {
-        "ي": "ی",  # Arabic yeh
-        "ى": "ی",  # alef maksura
-        "ك": "ک",  # Arabic kaf
-        "ھ": "ه",  # heh doachashmee
-        "ۀ": "ه",  # heh with yeh above
-        "ە": "ه",  # ae
-    }
-)
-# Arabic-Indic digits and Persian digits -> ASCII digits
-_DIGIT_MAP = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "0123456789" * 2)
+from backend.utils.text import normalize_fa
 
 
 def normalize_fa(text: str) -> str:
