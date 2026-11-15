@@ -20,7 +20,6 @@ that leaves this module goes through it.
 from __future__ import annotations
 
 import re
-import unicodedata
 from pathlib import Path
 
 import pdfplumber
@@ -28,13 +27,6 @@ import pymupdf
 from bidi.algorithm import get_display
 from backend.utils.text import normalize_fa
 
-
-def normalize_fa(text: str) -> str:
-    """Normalize Persian text: letter forms, Arabic variants and digits."""
-    text = unicodedata.normalize("NFKC", text)
-    text = text.translate(_CHAR_MAP).translate(_DIGIT_MAP)
-    text = re.sub(r"[ \t]+", " ", text)
-    return text.strip()
 
 
 _NUM_TOKEN = re.compile(r"^[\d,./()\-%]+$")

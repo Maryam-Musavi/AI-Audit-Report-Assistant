@@ -28,6 +28,9 @@ def test_normalize_unifies_digits_and_letters():
     assert normalize_fa("ﺷﺮﮐﺖ") == "شرکت"
 
 
+
+
+
 def test_fix_visual_cell_restores_word_order():
     assert fix_visual_cell("ﻲﺤﻟﺎﺻ ﺪﻤﺣا") == "احمد صالحی"
 
