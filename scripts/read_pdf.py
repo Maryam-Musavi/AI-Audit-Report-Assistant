@@ -6,6 +6,11 @@ OUTPUT_PATH = GENERATED / "all_pages.txt"
 
 pages = extract_all_pages(PDF_PATH)
 print(f"Pages: {len(pages)}")
+if len(pages) >= 2:
+    print("===== Page 2 preview =====")
+    print(pages[1])
+else:
+    print("The PDF has fewer than 2 pages.")
 
 with open(OUTPUT_PATH, mode="w", encoding="utf-8") as file:
     for number, text in enumerate(pages, start=1):
