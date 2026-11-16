@@ -9,6 +9,14 @@ print(f"Pages: {len(pages)}")
 if len(pages) >= 2:
     print("===== Page 2 preview =====")
     print(pages[1])
+
+    page_record = {
+        "source": PDF_PATH.name,
+        "page_number": 2,
+        "text": pages[1],
+    }
+    
+    print(page_record["source"], page_record["page_number"])
 else:
     print("The PDF has fewer than 2 pages.")
 
