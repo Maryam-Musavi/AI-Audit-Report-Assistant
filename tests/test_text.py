@@ -11,3 +11,4 @@ def test_normalize_preserves_newlines():
 def test_normalize_extra_spaces():
     result = normalize_fa("  جمع   دارایی  ")
     assert result == "جمع دارایی"
+
