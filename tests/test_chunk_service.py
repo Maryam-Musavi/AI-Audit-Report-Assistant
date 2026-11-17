@@ -1,4 +1,4 @@
-import pytest_lazyfixture
+import pytest
 
 from backend.services.chunk_service import chunk_pages
 
@@ -11,13 +11,13 @@ def test_chunk_pages_text():
         }
     ]
 
-chunks = chunk_pages(pages, chunk_size=4)
+    chunks = chunk_pages(pages, chunk_size=4)
 
-assert [chunk["text"] for chunk in chunks] == [
-    "abcd",
-    "efgh",
-    "ij",
-]
+    assert [chunk["text"] for chunk in chunks] == [
+        "abcd",
+        "efgh",
+        "ij",
+    ]
 
 def test_chunk_pages_preserves_source_and_page():
     pages = [
