@@ -9,6 +9,12 @@ The goal is to build a simple web application while learning:
 - PDF text extraction, chunking, embeddings, and vector search
 - Source-grounded answers and basic RAG evaluation
 
+## هدف آموزشی و نحوهٔ همکاری
+
+صاحب پروژه به‌تازگی دورهٔ LLMOps را گذرانده و این پروژه را برای تمرین عملی و یادگیری برنامه‌نویسی انجام می‌دهد؛ او در برنامه‌نویسی مبتدی است. هدف فقط تکمیل محصول نیست، بلکه فهمیدن کد و روند ساخت آن نیز هست.
+
+ایجنت‌ها هنگام پیشبرد پروژه، تغییرات را به گام‌های قابل‌فهم تقسیم کنند و به زبان فارسی ساده توضیح دهند چه کاری انجام شده، چرا لازم بوده و بخش‌های مهم کد چگونه کار می‌کنند. اصطلاحات و دستورهای جدید را با مثال کوتاه توضیح دهند، روش اجرای تغییر و بررسی نتیجه را نشان دهند و در صورت مفید بودن یک تمرین کوچک پیشنهاد کنند. در عین حال با توجه به درخواست کاربر کار را پیش ببرند و از توضیحات طولانی یا فرض دانش قبلی برنامه‌نویسی بپرهیزند.
+
 ## Project Scope (MVP)
 
 The first version intentionally supports **one PDF report at a time**.
@@ -30,6 +36,16 @@ The system should clearly say when the report does not contain enough informatio
 - What significant matters or qualified opinions did the auditor report?
 
 These questions are examples only. Whether an answer is possible depends on the contents and quality of the selected report.
+
+## Current PDF search prototype
+
+After installing the requirements, search a text-based PDF from the repository root:
+
+```powershell
+python -m scripts.search_pdf data/samples/seo-codal-report.pdf "134,341,922"
+```
+
+This prints matching passages with the PDF filename and page number. It uses simple word overlap, not semantic search or an LLM, and does not generate answers. An empty result does not prove the information is absent. Scanned PDFs without extractable text require OCR, which is not implemented.
 
 ## High-Level Architecture
 
