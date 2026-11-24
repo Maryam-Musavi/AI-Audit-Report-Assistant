@@ -11,11 +11,15 @@ lxml>=5.0
 # Terminal output (colored console)
 rich>=13.0
 
+# Web API
+fastapi
+uvicorn
+python-multipart
+
 # Testing
 pytest>=8.0
+httpx
 
 # Planned (README): add when the code uses them
-# fastapi
-# uvicorn
 # chromadb
 # python-dotenv

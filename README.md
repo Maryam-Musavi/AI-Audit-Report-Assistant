@@ -47,6 +47,22 @@ python -m scripts.search_pdf data/samples/seo-codal-report.pdf "134,341,922"
 
 This prints matching passages with the PDF filename and page number. It uses simple word overlap, not semantic search or an LLM, and does not generate answers. An empty result does not prove the information is absent. Scanned PDFs without extractable text require OCR, which is not implemented.
 
+## اجرای API و آزمایش آن
+
+پس از نصب وابستگی‌ها، از ریشهٔ پروژه سرور را اجرا کنید:
+
+```powershell
+python -m uvicorn backend.main:app --reload
+```
+
+در مرورگر به `http://127.0.0.1:8000/docs` بروید. این صفحه امکان آزمایش درخواست‌ها را فراهم می‌کند:
+
+1. با `GET /health` وضعیت سرور و بارگذاری سند را ببینید.
+2. در `POST /documents` گزینهٔ **Try it out** را بزنید، یک PDF متنی حداکثر ۱۰ مگابایتی انتخاب کنید و **Execute** را بزنید.
+3. در `POST /search` با **Try it out** سؤالی مانند `134,341,922` در فیلد `question` بنویسید و **Execute** را بزنید. فیلد `top_k` حداکثر تعداد قطعات بازگشتی را تعیین می‌کند.
+
+در پاسخ جست‌وجو، `evidence` شامل متن، نام فایل، شمارهٔ صفحه و امتیاز تطبیق است. فهرست خالی به معنی نیافتن تطبیق است، نه اثبات نبود اطلاعات. فعلاً یک سند فقط در حافظهٔ همین فرایند نگهداری می‌شود و با راه‌اندازی مجدد پاک می‌شود؛ این نسخه برای اجرای محلی تک‌کاربره است و پاسخ مدل زبانی ندارد.
+
 ## High-Level Architecture
 
 ```text
@@ -247,9 +263,10 @@ Possible endpoints for the MVP:
 |---|---|---|
 | `GET` | `/health` | Check whether the backend is running |
 | `POST` | `/documents` | Upload and process one PDF report |
-| `POST` | `/chat` | Ask a question about the processed report |
+| `POST` | `/search` | Retrieve passages for a question |
+| `POST` | `/chat` | Planned: generate an answer about the processed report |
 
-These endpoints are a starting design; they do not exist until implemented. File uploads will normally use `multipart/form-data`, while chat requests can use JSON.
+The first three endpoints are implemented. Uploads use `multipart/form-data`, and search requests use JSON. `/chat` is a planned endpoint.
 
 ## Security and Reliability
 
