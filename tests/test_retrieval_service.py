@@ -58,7 +58,7 @@ def test_retrieve_respects_top_k():
     assert results[0]["page_number"] == 2
 
 
-def test_retireive_number_with_different_seperators():
+def test_retrieve_number_with_different_separators():
     chunks = [
         {
             "source": "report.pdf",

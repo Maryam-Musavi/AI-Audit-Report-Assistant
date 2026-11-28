@@ -3,6 +3,11 @@ import re
 from backend.utils.text import norm
 
 
+def normalize_number(token):
+    if re.fullmatch(r"\d{1,3}(?:,\d{3}){2,}|\d{1,3}(?:\.\d{3}){2,}", token):
+        return token.replace(",", "").replace(".", "")
+    return token
+
 def _words(text):
     return set(re.findall(r"\d+(?:[,.]\d+)*|[^\W\d_]+", norm(text)))
 
